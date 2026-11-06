@@ -8,6 +8,7 @@
 import { createServer } from "node:http";
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
+import { pathToFileURL } from "node:url";
 import * as E from "./engine.mjs";
 import { writeNode, writeEdge, queryNodes } from "./store/knowledge.mjs";
 import { loadRwangProject, toSnapshot, listProjects } from "./gks/rwang-ingest.mjs";
@@ -102,9 +103,12 @@ const server = createServer(async (req, res) => {
     // Semantic doc search (feature--g-aligner). Roots are fixed server-side, never taken from the body.
     if (req.method === "POST" && url.pathname === "/api/search") {
       const { query, limit, backend } = await readBody(req);
+      // semantic_ir.mjs lives in G-Maiden (tools/doc-graph). Point GMAIDEN_ROOT at a checkout to enable this route.
+      const gm = process.env.GMAIDEN_ROOT;
+      if (!gm) return send(res, 501, { ok: false, error: "search disabled: set GMAIDEN_ROOT to a G-Maiden checkout" });
       try {
-        const { semanticSearch } = await import("../tools/doc-graph/semantic_ir.mjs");
-        const roots = [join(E.PATHS.ROOT, "docs"), join(E.PATHS.ROOT, ".govibe", ".brain")];
+        const { semanticSearch } = await import(pathToFileURL(join(gm, "tools", "doc-graph", "semantic_ir.mjs")).href);
+        const roots = [join(gm, "docs"), join(gm, ".govibe", ".brain")];
         return send(res, 200, { ok: true, hits: await semanticSearch(roots, query, { limit, backend }) });
       } catch (e) { return send(res, 500, { ok: false, error: e.message }); }
     }

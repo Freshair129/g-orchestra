@@ -149,7 +149,7 @@ legacy bare names → claude:name (backward compat)
 | `orchestration/engine.mjs` | **MOD** — imports providers.mjs; modelFor uses resolveForRole; runAgent delegates to runProvider; reviewerModelFor uses reviewerRole |
 | `orchestration/auto-wave.mjs` | **MOD** — supervisor uses `providers.claude` config, not `CONFIG.executor` |
 | `orchestration/server.mjs` | **MOD** — adds `GET /api/providers` endpoint |
-| `.govibe/.agents/agent-registry.yaml` | **MOD** — v2.0 with real role definitions, capability tags, provider declarations |
+| [`.govibe/.agents/agent-registry.yaml`](https://github.com/Freshair129/G-Maiden/blob/main/.govibe/.agents/agent-registry.yaml) (G-Maiden repo) | **MOD** — v2.0 with real role definitions, capability tags, provider declarations |
 | `orchestration/backlog.json` | **MOD** — `model: "local"` → `model: "ollama:gemma4-rust-coder:latest"` (4 tasks) |
 
 ## Compliance / links
